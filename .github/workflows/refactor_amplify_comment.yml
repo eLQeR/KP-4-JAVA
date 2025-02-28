@@ -34,4 +34,3 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           body: |
             Access this pull request with subdomain here: https://pr-${{github.event.issue.number}}.${{ env.AWS_AMLIFY_DOMAIN }} <br/><br/> **Deployment was made at:** ${{ env.current_time }}
-  
