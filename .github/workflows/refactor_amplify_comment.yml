@@ -30,7 +30,8 @@ jobs:
         uses: peter-evans/create-or-update-comment@v3
         with:
           edit-mode: append
+          issue-number: ${{ github.event.issue.number }}
           comment-id: ${{ github.event.comment.id }}
-          body: |
-             Link with domain: https://pr-${{ github.event.issue.number }}.${{ env.AWS_AMLIFY_DOMAIN }}
+          body: "${{ github.event.comment.body }} \n\n Link with domain: https://pr-${{ github.event.issue.number }}.${{ env.AWS_AMLIFY_DOMAIN }}"
           token: ${{ secrets.GITHUB_TOKEN }}
+          
