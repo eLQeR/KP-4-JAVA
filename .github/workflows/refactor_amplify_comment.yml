@@ -30,7 +30,7 @@ jobs:
           NUMBER: ${{ github.event.issue.number }}
 
       - name: Get current timestamp
-        run: echo "current_time=$(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> $GITHUB_ENV
+        run: echo "current_time=$(TZ="Europe/Kyiv" date +"%Y-%m-%d %H:%M:%S %Z")" >> $GITHUB_ENV
       
       - name: Update comment
         env:
