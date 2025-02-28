@@ -29,9 +29,9 @@ jobs:
           AWS_AMLIFY_DOMAIN: ${{ vars.AWS_AMLIFY_DOMAIN }}
         uses: peter-evans/create-or-update-comment@v3
         with:
-          edit-mode: append
-          issue-number: ${{ github.event.issue.number }}
-          comment-id: ${{ github.event.comment.id }}
-          body: "${{ github.event.comment.body }} \n\n Link with domain: https://pr-${{ github.event.issue.number }}.${{ env.AWS_AMLIFY_DOMAIN }}"
-          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          edit-mode: replace
+          comment-id: ${{github.event.comment.id}}
+          body: |
+            This pull request is automatically being deployed by Amplify Hosting ([learn more](https://aws.amazon.com/amplify/hosting/)).<br/><br/>Access this pull request here: https://pr-${{github.event.issue.number}}.example.com
+
           
