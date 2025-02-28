@@ -15,7 +15,6 @@ jobs:
 
   pr_commented:
     name: PR comment editing
-    if: ${{ github.event.issue.pull_request &&  contains(github.event.comment.user.login, 'aws-amplify') }}
     runs-on: ubuntu-latest
     steps:
       - run: |
