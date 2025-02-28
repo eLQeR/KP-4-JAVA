@@ -11,7 +11,7 @@ on:
 jobs:
   pr_commented:
     name: PR comment editing
-    if: ${{ github.event.issue.pull_request &&  contains(github.event.comment.user.login, 'eLQeR') }}
+    if: ${{ github.event.issue.pull_request &&  contains(github.event.comment.user.login, 'eLQeR1') }}
     runs-on: ubuntu-latest
     steps:
       - run: |
