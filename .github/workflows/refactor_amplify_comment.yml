@@ -1,0 +1,36 @@
+name: Amplify Deployment Comment
+
+on:
+  issue_comment:
+    types: [created]
+  workflow_dispatch:
+
+jobs:
+  debug_event:
+    name: Debug Event Payload
+    runs-on: ubuntu-latest
+    steps:
+      - name: Debug event payload
+        run: echo '${{ toJSON(github.event) }}'
+
+  pr_commented:
+    name: PR comment editing
+    if: ${{ github.event.issue.pull_request &&  contains(github.event.comment.user.login, 'aws-amplify') }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo trying to edit comment on PR $NUMBER $USER_ID $COMMENT_ID
+        env:
+          USER_ID: ${{ github.event.comment.user.login }}
+          COMMENT_ID: ${{ github.event.comment.id }}
+          NUMBER: ${{ github.event.issue.number }}
+
+      - name: Update comment
+        env:
+          AWS_AMLIFY_DOMAIN: ${{ vars.AWS_AMLIFY_DOMAIN }}
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          edit-mode: append
+          comment-id: ${{ github.event.comment.id }}
+          body: |
+             Link with domain: https://pr-${{ github.event.issue.number }}.${{ env.AWS_AMLIFY_DOMAIN }}
