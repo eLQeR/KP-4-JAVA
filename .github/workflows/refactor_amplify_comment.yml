@@ -33,3 +33,4 @@ jobs:
           comment-id: ${{ github.event.comment.id }}
           body: |
              Link with domain: https://pr-${{ github.event.issue.number }}.${{ env.AWS_AMLIFY_DOMAIN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
