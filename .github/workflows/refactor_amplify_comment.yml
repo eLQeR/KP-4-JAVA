@@ -1,5 +1,9 @@
 name: Amplify Deployment Comment
 
+permissions:
+  issues: write
+  pull-requests: write
+
 on:
   issue_comment:
     types: [created]
@@ -31,6 +35,7 @@ jobs:
         with:
           edit-mode: replace
           comment-id: ${{github.event.comment.id}}
+          token: ${{ secrets.GITHUB_TOKEN }}
           body: |
             This pull request is automatically being deployed by Amplify Hosting ([learn more](https://aws.amazon.com/amplify/hosting/)).<br/><br/>Access this pull request here: https://pr-${{github.event.issue.number}}.example.com
 
