@@ -29,15 +29,18 @@ jobs:
           COMMENT_ID: ${{ github.event.comment.id }}
           NUMBER: ${{ github.event.issue.number }}
 
+      - name: Get current timestamp
+        run: echo "current_time=$(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> $GITHUB_ENV
+      
       - name: Update comment
         env:
           AWS_AMLIFY_DOMAIN: ${{ vars.AWS_AMLIFY_DOMAIN }}
         uses: peter-evans/create-or-update-comment@v3
         with:
-          edit-mode: replace
+          edit-mode: append
           comment-id: ${{github.event.comment.id}}
           token: ${{ secrets.GITHUB_TOKEN }}
           body: |
-            This pull request is automatically being deployed by Amplify Hosting ([learn more](https://aws.amazon.com/amplify/hosting/)).<br/><br/>Access this pull request here: https://pr-${{github.event.issue.number}}.example.com
+            This pull request is automatically being deployed by Amplify Hosting ([learn more](https://aws.amazon.com/amplify/hosting/)).<br/><br/>Access this pull request here: https://pr-${{github.event.issue.number}}.${{ env.AWS_AMLIFY_DOMAIN }} <br/><br/> **Deployment was made at:** ${{ env.current_time }}
 
           
