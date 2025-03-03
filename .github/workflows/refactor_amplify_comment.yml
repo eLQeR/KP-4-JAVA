@@ -47,6 +47,6 @@ jobs:
           comment-id: ${{ steps.find_comment.outputs.comment-id }}
           issue-number: ${{ github.event.issue.number }}
           body: |
-            Access this pull request with subdomain here: https://pr-${{ github.event.issue.number }}.${{ env.AWS_AMPLIFY_DOMAIN }} <br/><br/> **Deployment was made at:** ${{ env.current_time }}
+            This pull request is automatically being deployed by Amplify Hosting ([learn more](https://aws.amazon.com/amplify/hosting/)).<br/><br/>Access this pull request here: https://pr-${{ github.event.issue.number }}.${{ env.AWS_AMPLIFY_DOMAIN }} <br/><br/> **Deployment was made at:** ${{ env.current_time }}
           edit-mode: replace
           token: ${{ secrets.GITHUB_TOKEN }}
