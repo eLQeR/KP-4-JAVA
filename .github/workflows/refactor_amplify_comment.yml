@@ -1,36 +1,52 @@
 name: Amplify Deployment Comment
 
+permissions:
+  issues: write
+  pull-requests: write
+
 on:
   issue_comment:
     types: [created]
-  workflow_dispatch:
 
 jobs:
-  debug_event:
-    name: Debug Event Payload
+  handle_amplify_comment:
+    name: Handle Amplify Bot Comment
+    if: ${{ github.event.issue.pull_request && contains(github.event.comment.user.login, 'eLQeR') }}
     runs-on: ubuntu-latest
     steps:
-      - name: Debug event payload
-        run: echo '${{ toJSON(github.event) }}'
+      - name: Delete Amplify Bot comment
+        uses: octokit/request-action@v2.1.0
+        with:
+          route: DELETE /repos/{owner}/{repo}/issues/comments/{comment_id}
+          owner: ${{ github.repository_owner }}
+          repo: ${{ github.event.repository.name }}
+          comment_id: ${{ github.event.comment.id }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  pr_commented:
-    name: PR comment editing
-    if: ${{ github.event.issue.pull_request &&  contains(github.event.comment.user.login, 'aws-amplify') }}
+  manage_deployment_comment:
+    name: Manage Deployment Comment
     runs-on: ubuntu-latest
     steps:
-      - run: |
-          echo trying to edit comment on PR $NUMBER $USER_ID $COMMENT_ID
-        env:
-          USER_ID: ${{ github.event.comment.user.login }}
-          COMMENT_ID: ${{ github.event.comment.id }}
-          NUMBER: ${{ github.event.issue.number }}
+      - name: Get current timestamp
+        run: echo "current_time=$(TZ="Europe/Kyiv" date +"%Y-%m-%d %H:%M:%S")" >> $GITHUB_ENV
 
-      - name: Update comment
+      - name: Find existing deployment comment
+        id: find_comment
+        uses: peter-evans/find-comment@v3
+        with:
+          issue-number: ${{ github.event.issue.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: '**Deployment was made at:**'
+
+      - name: Create or update deployment comment
         env:
-          AWS_AMLIFY_DOMAIN: ${{ vars.AWS_AMLIFY_DOMAIN }}
+          AWS_AMPLIFY_DOMAIN: ${{ vars.AWS_AMPLIFY_DOMAIN }}
         uses: peter-evans/create-or-update-comment@v3
         with:
-          edit-mode: append
-          comment-id: ${{ github.event.comment.id }}
+          comment-id: ${{ steps.find_comment.outputs.comment-id }}
+          issue-number: ${{ github.event.issue.number }}
           body: |
-             Link with domain: https://pr-${{ github.event.issue.number }}.${{ env.AWS_AMLIFY_DOMAIN }}
+            This pull request is automatically being deployed by Amplify Hosting ([learn more](https://aws.amazon.com/amplify/hosting/)).<br/><br/>Access this pull request here: https://pr-${{ github.event.issue.number }}.${{ env.AWS_AMPLIFY_DOMAIN }} <br/><br/> **Deployment was made at:** ${{ env.current_time }}
+          edit-mode: replace
+          token: ${{ secrets.GITHUB_TOKEN }}
