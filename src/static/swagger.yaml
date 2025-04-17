@@ -13,7 +13,7 @@ servers:
 
 
 paths:
-  /api/v1/drawings/{drawingId}/questions/{questionId}/feedback:
+  /api/v1/drawings/{drawingId}/questions/{questionId}/feedback/:
     post:
       summary: Provide Feedback on AI Chatbot Response
       description: Allows the user to provide feedback on the AI chatbot's response to a specific question about a drawing.
@@ -96,7 +96,7 @@ paths:
                     type: string
                     description: Error message indicating a server-side issue.
 
-  /api/v1/drawings/{drawingId}/questions:
+  /api/v1/drawings/{drawingId}/questions/:
     get:
       summary: Retrieve AI Chatbot Questions for a Drawing
       description: Fetches a list of questions that a user can ask about a specific drawing by its ID. The response includes the processing status of the drawing.
@@ -418,7 +418,7 @@ paths:
                   error:
                     type: string
                     description: Error message indicating a server-side issue.
-  /api/v1/questions/{questionId}:
+  /api/v1/questions/{questionId}/:
     patch:
       summary: Update Question Fields (Prompt, Question, Sections)
       description: Updates the fields of a specific question, including the prompt, the question text, and the sections associated with it, identified by its unique ID.
@@ -557,7 +557,7 @@ paths:
                     type: string
                     description: Error message indicating a server-side issue.
 
-  /api/v1/questions/{questionId}/state:
+  /api/v1/questions/{questionId}/state/:
     patch:
       summary: Update Question State
       description: Updates the status of a specific question (active or inactive) identified by its unique ID.
@@ -723,7 +723,7 @@ paths:
           description: The type of keywords to return. Defaults to 'Drawing' if not provided.
           schema:
             type: string
-            enum: 
+            enum:
               - Drawing
               - Specification
       responses:
@@ -843,7 +843,7 @@ paths:
                 error: Invalid keyword
       x-stoplight:
         id: 01zp7eoz3y2mt
-  '/api/v1/keywords/{keywordId}/color':
+  '/api/v1/keywords/{keywordId}/color/':
     patch:
       summary: Change Keyword Color
       tags:
@@ -1011,7 +1011,7 @@ paths:
         - Token: []
       x-stoplight:
         id: 5cydsno2kjxna
-  '/api/v1/categories/{categoryId}/usedInProcessingStatus':
+  '/api/v1/categories/{categoryId}/usedInProcessingStatus/':
     patch:
       summary: Change if category is used in processing.
       tags:
@@ -1064,8 +1064,8 @@ paths:
                 error: Internal Server Error
       x-stoplight:
         id: ksg8b69wed8xm
-        
-  '/api/v1/categories/{categoryId}/modelNumbers':
+
+  '/api/v1/categories/{categoryId}/modelNumbers/':
     patch:
       summary: Modify Model Numbers for a Category
       tags:
@@ -1289,7 +1289,7 @@ paths:
       x-stoplight:
         id: createDualObjectCategoryEndpoint
 
-  /api/v1/drawings:
+  /api/v1/drawings/:
     get:
       summary: Get Drawings
       tags:
@@ -1808,83 +1808,13 @@ paths:
                 error: Internal Server Error
       x-stoplight:
         id: 0vh78u6rjevw0
-  /api/v1/drawings/{drawing_id}/processings/:
-    get:
-      summary: Get Processings for a Drawing
-      tags:
-        - Drawing processings
-      security:
-        - Token: []
-      description: Retrieve a dictionary of processing IDs for a specific drawing.
-      parameters:
-        - in: path
-          name: drawing_id
-          required: true
-          schema:
-            type: string
-          description: The ID of the drawing.
-      responses:
-        '200':
-          description: A dictionary of processing dates with corresponding IDs.
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties:
-                  type: integer
-                example:
-                  "12-07-2024 (latest)": 31254124
-                  "12-07-2024": 562423
-                  "01-06-2024": 5345345
-        '404':
-          description: Drawing not found.
-        '500':
-          description: Internal server error.
-  '/api/v1/drawings/{drawingId}':
-    delete:
-      summary: Delete Drawing
-      tags:
-        - Drawings
-      security:
-        - Token: []
-      description: Delete a drawing by its ID.
-      parameters:
-        - in: path
-          name: drawingId
-          required: true
-          schema:
-            type: integer
-          description: The ID of the drawing to delete.
-      responses:
-        '204':
-          description: Drawing deleted successfully.
-        '401':
-          description: Unauthorized. Invalid token or authentication failed.
-          content:
-            application/json:
-              example:
-                error: Unauthorized
-        '404':
-          description: Drawing with the specified ID not found.
-          content:
-            application/json:
-              example:
-                error: Drawing not found.
-        '500':
-          description: Internal Server Error.
-          content:
-            application/json:
-              example:
-                error: Internal Server Error
-      x-stoplight:
-        id: xsl23ry228dih
-  '/api/v1/drawings/':
+
     delete:
       summary: Bulk Delete Drawings
       tags:
         - Drawings
       security:
-        - Token: []
+        - Token: [ ]
       description: Delete multiple drawings by their IDs.
       requestBody:
         required: true
@@ -1901,7 +1831,7 @@ paths:
               required:
                 - drawing_ids
             example:
-              drawing_ids: [32, 33]
+              drawing_ids: [ 32, 33 ]
       responses:
         '204':
           description: Drawings deleted successfully.
@@ -1945,7 +1875,41 @@ paths:
             application/json:
               example:
                 error: Internal Server Error
-  /api/v1/drawings/upload/order:
+
+  /api/v1/drawings/{drawing_id}/processings/:
+    get:
+      summary: Get Processings for a Drawing
+      tags:
+        - Drawing processings
+      security:
+        - Token: []
+      description: Retrieve a dictionary of processing IDs for a specific drawing.
+      parameters:
+        - in: path
+          name: drawing_id
+          required: true
+          schema:
+            type: string
+          description: The ID of the drawing.
+      responses:
+        '200':
+          description: A dictionary of processing dates with corresponding IDs.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: integer
+                example:
+                  "12-07-2024 (latest)": 31254124
+                  "12-07-2024": 562423
+                  "01-06-2024": 5345345
+        '404':
+          description: Drawing not found.
+        '500':
+          description: Internal server error.
+
+  /api/v1/drawings/upload/order/:
     post:
       summary: Upload Drawing
       description: Initiate the upload of a drawing.
@@ -1995,7 +1959,7 @@ paths:
                 error: Internal Server Error
       x-stoplight:
         id: 2soi28hzs5jsj
-  '/api/v1/drawings/upload/{uploadId}/finished':
+  '/api/v1/drawings/upload/{uploadId}/finished/':
     patch:
       summary: Notify Backend about Finished Upload
       tags:
@@ -2061,7 +2025,7 @@ paths:
                 error: Internal Server Error
       x-stoplight:
         id: 6okex4n2192xj
-  '/api/v1/drawings/{drawingId}/process':
+  '/api/v1/drawings/{drawingId}/process/':
     post:
       summary: Process Drawings
       description: Initiate the processing of a drawing.
@@ -2103,7 +2067,7 @@ paths:
                 error: Internal Server Error
       x-stoplight:
         id: czv9t29s7iod0
-  '/api/v1/drawings/{drawingId}/duplicate':
+  '/api/v1/drawings/{drawingId}/duplicate/':
     post:
       summary: Duplicates drawing.
       description: Duplicated drawing will be owned by the person who initiated duplication.
@@ -2396,7 +2360,7 @@ paths:
             application/json:
               example:
                 error: Drawing not found.
-  /api/v1/users:
+  /api/v1/users/:
     get:
       summary: Get Users
       tags:
@@ -2488,7 +2452,68 @@ paths:
                 error: Internal Server Error
       x-stoplight:
         id: ephd3zjknsxd4
-  /api/v1/users/{userId}/role:
+
+    post:
+      summary: Create a new user - implemented by backend
+      description: Endpoint for user registration.
+      tags:
+        - Registration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                  description: The first name of the new user.
+                last_name:
+                  type: string
+                  description: The last name of the new user.
+                email:
+                  type: string
+                  format: email
+                  description: The email address of the new user.
+                password:
+                  type: string
+                  format: password
+                  description: The password for the new user.
+                re_password:
+                  type: string
+                  format: password
+                  description: Password repeat.
+                registration_token:
+                  type: string
+                  description: The registration token, created by admin user.
+              required:
+                - first_name
+                - last_name
+                - email
+                - password
+                - re_password
+                - registration_token
+      responses:
+        '201':
+          description: User created successfully.
+          content:
+            application/json:
+              example:
+                id: 1
+                email: john@example.com
+                first_name: John,
+                last_name: Dave
+        '400':
+          description: Bad request. Check the request payload.
+          content:
+            application/json:
+              example:
+                error: Bad Request
+                message: Unable to create account.
+      x-stoplight:
+        id: nt4ply6bapuaw
+
+  /api/v1/users/{userId}/role/:
     post:
       summary: Change User Role
       description: Update the role of a user.
@@ -2544,7 +2569,7 @@ paths:
             application/json:
               example:
                 error: Internal Server Error
-  /api/v1/users/{userId}/state:
+  /api/v1/users/{userId}/state/:
     post:
       summary: Change User State
       description: Update the state of a user.
@@ -2600,7 +2625,7 @@ paths:
               example:
                 error: Internal Server Error
 
-  /api/v1/users/{userId}/delete:
+  /api/v1/users/{userId}/delete/:
     delete:
       summary: Delete User
       description: Delete a user from the system. Only deactivated users can be deleted.
@@ -2657,7 +2682,7 @@ paths:
                 error: Internal Server Error
 
 
-  /api/v1/users/profile:
+  /api/v1/users/profile/:
     get:
       summary: Get User Profile
       tags:
@@ -2719,7 +2744,7 @@ paths:
                 error: Internal Server Error
       x-stoplight:
         id: 6t6nli0x2qp49
-  '/api/v1/drawings/{drawingId}/documents':
+  '/api/v1/drawings/{drawingId}/documents/':
     get:
       summary: Get Documents Related to Drawing
       tags:
@@ -2827,7 +2852,7 @@ paths:
       x-stoplight:
         id: o2so9blzcejmn
 
-  '/api/v1/drawings/{drawingId}/processings/{processingId}/documents':
+  '/api/v1/drawings/{drawingId}/processings/{processingId}/documents/':
     get:
       summary: Get Documents Related to Drawing
       tags:
@@ -2941,7 +2966,7 @@ paths:
       x-stoplight:
         id: o2so9blzcejmn
 
-  '/api/v1/drawings/{drawingId}/archiveDownloadLink':
+  '/api/v1/drawings/{drawingId}/archiveDownloadLink/':
     get:
       summary: Download Archive File
       tags:
@@ -2983,7 +3008,7 @@ paths:
                 error: Internal Server Error
       x-stoplight:
         id: y64vqqw7wvb4q
-  '/api/v1/drawings/{drawingId}/processingStatus':
+  '/api/v1/drawings/{drawingId}/processingStatus/':
     get:
       summary: Get Processing Status for Drawing
       tags:
@@ -3024,7 +3049,7 @@ paths:
               schema:
                 type: string
               example: application/json
-          
+
         '401':
           description: Unauthorized. Invalid token or authentication failed.
           content:
@@ -3044,7 +3069,7 @@ paths:
               example:
                 error: Internal Server Error
 
-  '/api/v1/drawings/{drawingId}/keywords':
+  '/api/v1/drawings/{drawingId}/keywords/':
     get:
       summary: Get Keywords Related to Drawing
       tags:
@@ -3188,7 +3213,7 @@ paths:
                 error: Internal Server Error
       x-stoplight:
         id: dha5u0o9q5lod
-  '/api/v1/drawings/{drawingId}/objects-found':
+  '/api/v1/drawings/{drawingId}/objects-found/':
     get:
       summary: Get Objects Found in Drawing
       tags:
@@ -3252,7 +3277,7 @@ paths:
                 error: Internal Server Error
       x-stoplight:
         id: 5hpj38mfx55kw
-  '/api/v1/drawings/{drawingId}/processings/{processingId}/objects-found':
+  '/api/v1/drawings/{drawingId}/processings/{processingId}/objects-found/':
     get:
       summary: Get Objects Found in Drawing
       tags:
@@ -3485,7 +3510,7 @@ paths:
             application/json:
               example:
                 error: Internal Server Error
-  '/api/v1/drawings/{drawingId}/documents/history':
+  '/api/v1/drawings/{drawingId}/documents/history/':
     get:
       summary: History of Documents Related to Drawing
       tags:
@@ -3577,7 +3602,7 @@ paths:
                 error: Internal Server Error
       x-stoplight:
         id: si7vrg5ntws1m
-  /api/v1/users/invite:
+  /api/v1/users/invite/:
     post:
       summary: Invite Users
       tags:
@@ -3627,7 +3652,7 @@ paths:
         id: lq1j09rijuhis
 
 
-  /api/v1/oauth2/token:
+  /api/v1/oauth2/token/:
     post:
       summary: Creates token used to access API resources - implemented by backend.
       tags:
@@ -3688,7 +3713,7 @@ paths:
                 message: Invalid token.
       x-stoplight:
         id: 9qpjml2h9nsf5
-  /api/v1/oauth2/2fa/token:
+  /api/v1/oauth2/2fa/token/:
     post:
       summary: Creates token used to access API resources using 2FA mechanism.
       description: Authenticates a user based on an ephemeral token and a verification code. The result token provides full access to recourses defined by the user role.
@@ -3786,6 +3811,44 @@ paths:
                 error: Internal Server Error
       x-stoplight:
         id: 4p00dhugvqn2d
+
+    delete:
+      summary: Delete Drawing
+      tags:
+        - Drawings
+      security:
+        - Token: [ ]
+      description: Delete a drawing by its ID.
+      parameters:
+        - in: path
+          name: drawingId
+          required: true
+          schema:
+            type: integer
+          description: The ID of the drawing to delete.
+      responses:
+        '204':
+          description: Drawing deleted successfully.
+        '401':
+          description: Unauthorized. Invalid token or authentication failed.
+          content:
+            application/json:
+              example:
+                error: Unauthorized
+        '404':
+          description: Drawing with the specified ID not found.
+          content:
+            application/json:
+              example:
+                error: Drawing not found.
+        '500':
+          description: Internal Server Error.
+          content:
+            application/json:
+              example:
+                error: Internal Server Error
+      x-stoplight:
+        id: xsl23ry228dih
 
   /api/v1/categories/train_categories/:
     get:
@@ -4366,7 +4429,7 @@ paths:
                 error: Internal Server Error
       x-stoplight:
         id: dqxmppb6u3cze
-  '/api/v1/keywords/{keywordId}':
+  '/api/v1/keywords/{keywordId}/':
     delete:
       summary: Delete Keyword
       tags:
@@ -4404,7 +4467,7 @@ paths:
                 error: Internal Server Error
       x-stoplight:
         id: rll79ebke8zd6
-  /api/v1/keywords/palette-colors:
+  /api/v1/keywords/palette-colors/:
     get:
       summary: Get Palette Colors
       tags:
@@ -4439,7 +4502,7 @@ paths:
                 error: Internal Server Error
       x-stoplight:
         id: rrvvbcwreoxfc
-  /api/v1/keywords/colors:
+  /api/v1/keywords/colors/:
     get:
       summary: Get Colors
       tags:
@@ -4496,57 +4559,13 @@ paths:
                 error: Internal Server Error
       x-stoplight:
         id: 3awhsi3jlfzvn
-  /api/v1/keywords/colors/{colorId}:
-    delete:
-      summary: Delete Color
-      tags:
-        - Keywords
-      security:
-        - Token: []
-      description: Delete a color by its ID.
-      parameters:
-        - in: path
-          name: colorId
-          required: true
-          schema:
-            type: integer
-          description: The ID of the color to be deleted.
-      responses:
-        '204':
-          description: Color deleted successfully.
-        '401':
-          description: Unauthorized. Invalid token or authentication failed.
-          content:
-            application/json:
-              example:
-                error: Unauthorized
-        '404':
-          description: Color with the specified ID not found.
-          content:
-            application/json:
-              example:
-                error: Color not found.
-        '409':
-          description: Conflict. There are still keywords using this color.
-          content:
-            application/json:
-              example:
-                error: Keywords still use this color.
-        '500':
-          description: Internal Server Error.
-          content:
-            application/json:
-              example:
-                error: Internal Server Error
-      x-stoplight:
-        id: 0knxtkkc9xti7
-  /api/v1/keywords/colors/:
+
     post:
       summary: Add Color
       tags:
         - Keywords
       security:
-        - Token: []
+        - Token: [ ]
       description: Add a new color to the system.
       requestBody:
         required: true
@@ -4600,6 +4619,52 @@ paths:
                 error: Internal Server Error
       x-stoplight:
         id: dd2yfnjbk883f
+
+  /api/v1/keywords/colors/{colorId}/:
+    delete:
+      summary: Delete Color
+      tags:
+        - Keywords
+      security:
+        - Token: []
+      description: Delete a color by its ID.
+      parameters:
+        - in: path
+          name: colorId
+          required: true
+          schema:
+            type: integer
+          description: The ID of the color to be deleted.
+      responses:
+        '204':
+          description: Color deleted successfully.
+        '401':
+          description: Unauthorized. Invalid token or authentication failed.
+          content:
+            application/json:
+              example:
+                error: Unauthorized
+        '404':
+          description: Color with the specified ID not found.
+          content:
+            application/json:
+              example:
+                error: Color not found.
+        '409':
+          description: Conflict. There are still keywords using this color.
+          content:
+            application/json:
+              example:
+                error: Keywords still use this color.
+        '500':
+          description: Internal Server Error.
+          content:
+            application/json:
+              example:
+                error: Internal Server Error
+      x-stoplight:
+        id: 0knxtkkc9xti7
+
   /api/v1/drawings/{drawing_id}/processings/{processing_id}/key-phrases-config/{keyword_type}/:
     get:
       summary: Get Key Phrases Config used for processing
@@ -4818,66 +4883,7 @@ paths:
             application/json:
               example:
                 error: Internal Server Error
-  /api/v1/users/:
-    post:
-      summary: Create a new user - implemented by backend
-      description: Endpoint for user registration.
-      tags:
-        - Registration
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                first_name:
-                  type: string
-                  description: The first name of the new user.
-                last_name:
-                  type: string
-                  description: The last name of the new user.
-                email:
-                  type: string
-                  format: email
-                  description: The email address of the new user.
-                password:
-                  type: string
-                  format: password
-                  description: The password for the new user.
-                re_password:
-                  type: string
-                  format: password
-                  description: Password repeat.
-                registration_token:
-                    type: string
-                    description: The registration token, created by admin user.
-              required:
-                - first_name
-                - last_name
-                - email
-                - password
-                - re_password
-                - registration_token
-      responses:
-        '201':
-          description: User created successfully.
-          content:
-            application/json:
-              example:
-                id: 1
-                email: john@example.com
-                first_name: John,
-                last_name: Dave
-        '400':
-          description: Bad request. Check the request payload.
-          content:
-            application/json:
-              example:
-                error: Bad Request
-                message: Unable to create account.
-      x-stoplight:
-        id: nt4ply6bapuaw
+
   /api/v1/users/activation/:
     post:
       summary: Activate a user account  - implemented by backend.
@@ -5250,7 +5256,7 @@ paths:
                 message: Password reset token expired or invalid.
       x-stoplight:
         id: hsiui9upwkkgr
-  /api/v1/drawings/{drawingId}/processings/{processingId}/sw-versions:
+  /api/v1/drawings/{drawingId}/processings/{processingId}/sw-versions/:
     get:
       summary: Get versions of SW and model used for a specific processing.
       tags:
@@ -5301,7 +5307,7 @@ paths:
           description: Drawing or processing not found.
         '500':
           description: Internal server error.
-  /api/v1/registration/token:
+  /api/v1/registration/token/:
     post:
       summary: Create User Registration Token
       description: Creates registration token for a new user. Only administrators can create tokens.
